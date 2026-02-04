@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <%- include('partials/header') %>
+    
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1 class="page-title">
+                    <% if (category) { %>
+                        <%= category %> Posts
+                    <% } else if (search) { %>
+                        Search Results for "<%= search %>"
+                    <% } else { %>
+                        All Blog Posts
+                    <% } %>
+                </h1>
+                <p class="page-subtitle">
+                    <% if (search) { %>
+                        Found <%= posts.length %> posts matching your search
+                    <% } else { %>
+                        Discover amazing stories and insights from our community
+                    <% } %>
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Filters & Search -->
+    <section class="blog-filters">
+        <div class="container">
+            <div class="filters-container">
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i class="fas fa-filter"></i>
+                        Filter by Category:
+                    </label>
+                    <div class="category-filters">
+                        <a href="/blog" class="filter-btn <%= !category ? 'active' : '' %>">
+                            All Posts
+                        </a>
+                        <% categories.forEach(cat => { %>
+                            <a href="/blog?category=<%= cat %>" class="filter-btn <%= category === cat ? 'active' : '' %>">
+                                <%= cat %>
+                            </a>
+                        <% }); %>
+                    </div>
+                </div>
+                
+                <div class="search-group">
+                    <form class="blog-search-form" method="GET" action="/blog">
+                        <% if (category) { %>
+                            <input type="hidden" name="category" value="<%= category %>">
+                        <% } %>
+                        <div class="search-input-group">
+                            <input 
+                                type="text" 
+                                name="search" 
+                                placeholder="Search posts..." 
+                                value="<%= search || '' %>"
+                                class="search-input"
+                            >
+                            <button type="submit" class="search-submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Blog Posts -->
+    <section class="blog-content">
+        <div class="container">
+            <% if (posts.length > 0) { %>
+                <div class="posts-grid">
+                    <% posts.forEach(post => { %>
+                        <article class="post-card">
+                            <div class="card-image">
+                                <img src="<%= post.image %>" alt="<%= post.title %>" loading="lazy">
+                                <div class="card-overlay">
+                                    <span class="category-badge"><%= post.category %></span>
+                                    <% if (post.featured) { %>
+                                        <span class="featured-badge">
+                                            <i class="fas fa-star"></i>
+                                        </span>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-meta">
+                                    <span class="author">
+                                        <i class="fas fa-user"></i> <%= post.author %>
+                                    </span>
+                                    <span class="date">
+                                        <i class="fas fa-calendar"></i> <%= moment(post.createdAt).format('MMM DD, YYYY') %>
+                                    </span>
+                                </div>
+                                <h3 class="card-title">
+                                    <a href="/post/<%= post.slug %>"><%= post.title %></a>
+                                </h3>
+                                <p class="card-excerpt"><%= post.excerpt %></p>
+                                <div class="card-footer">
+                                    <div class="card-tags">
+                                        <% post.tags.slice(0, 3).forEach(tag => { %>
+                                            <span class="tag">#<%= tag %></span>
+                                        <% }); %>
+                                    </div>
+                                    <div class="card-stats">
+                                        <span class="stat">
+                                            <i class="fas fa-eye"></i> <%= post.views %>
+                                        </span>
+                                        <span class="stat">
+                                            <i class="fas fa-heart"></i> <%= post.likes %>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="card-actions">
+                                    <a href="/post/<%= post.slug %>" class="btn btn-primary">
+                                        Read More <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                    <button class="btn-icon like-btn" data-post-id="<%= post.id %>" title="Like this post">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                    <button class="btn-icon share-btn" onclick="sharePost('<%= post.title %>', '/post/<%= post.slug %>')" title="Share this post">
+                                        <i class="fas fa-share-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+                    <% }); %>
+                </div>
+                
+                <!-- Pagination -->
+                <% if (totalPages > 1) { %>
+                    <div class="pagination">
+                        <div class="pagination-info">
+                            Showing page <%= currentPage %> of <%= totalPages %>
+                        </div>
+                        <div class="pagination-controls">
+                            <% if (currentPage > 1) { %>
+                                <a href="/blog?page=<%= currentPage - 1 %><%= category ? '&category=' + category : '' %><%= search ? '&search=' + search : '' %>" class="pagination-btn">
+                                    <i class="fas fa-chevron-left"></i> Previous
+                                </a>
+                            <% } %>
+                            
+                            <div class="pagination-numbers">
+                                <% for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) { %>
+                                    <a href="/blog?page=<%= i %><%= category ? '&category=' + category : '' %><%= search ? '&search=' + search : '' %>" 
+                                       class="pagination-number <%= i === currentPage ? 'active' : '' %>">
+                                        <%= i %>
+                                    </a>
+                                <% } %>
+                            </div>
+                            
+                            <% if (currentPage < totalPages) { %>
+                                <a href="/blog?page=<%= currentPage + 1 %><%= category ? '&category=' + category : '' %><%= search ? '&search=' + search : '' %>" class="pagination-btn">
+                                    Next <i class="fas fa-chevron-right"></i>
+                                </a>
+                            <% } %>
+                        </div>
+                    </div>
+                <% } %>
+            <% } else { %>
+                <div class="no-posts">
+                    <div class="no-posts-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>No Posts Found</h3>
+                    <p>
+                        <% if (search) { %>
+                            No posts match your search criteria. Try different keywords or browse all posts.
+                        <% } else if (category) { %>
+                            No posts found in the <%= category %> category yet.
+                        <% } else { %>
+                            No posts have been published yet. Check back soon!
+                        <% } %>
+                    </p>
+                    <div class="no-posts-actions">
+                        <% if (search || category) { %>
+                            <a href="/blog" class="btn btn-primary">
+                                <i class="fas fa-list"></i> View All Posts
+                            </a>
+                        <% } %>
+                        <a href="/" class="btn btn-outline">
+                            <i class="fas fa-home"></i> Back to Home
+                        </a>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </section>
+    
+    <%- include('partials/footer') %>
+    
+    <script src="/js/main.js"></script>
+    <script>
+        // Filter animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const postCards = document.querySelectorAll('.post-card');
+            
+            // Animate post cards on load
+            postCards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.classList.add('animate-fade-in-up');
+            });
+            
+            // Search form enhancement
+            const searchForm = document.querySelector('.blog-search-form');
+            const searchInput = searchForm.querySelector('input[name="search"]');
+            
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchForm.submit();
+                }
+            });
+            
+            // Clear search
+            if (searchInput.value) {
+                const clearBtn = document.createElement('button');
+                clearBtn.type = 'button';
+                clearBtn.className = 'search-clear';
+                clearBtn.innerHTML = '<i class="fas fa-times"></i>';
+                clearBtn.title = 'Clear search';
+                
+                clearBtn.addEventListener('click', function() {
+                    searchInput.value = '';
+                    searchForm.submit();
+                });
+                
+                searchInput.parentNode.appendChild(clearBtn);
+            }
+        });
+        
+        // Share post function
+        function sharePost(title, url) {
+            const fullUrl = window.location.origin + url;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    url: fullUrl
+                }).catch(console.error);
+            } else {
+                // Fallback to copy to clipboard
+                navigator.clipboard.writeText(fullUrl).then(() => {
+                    showNotification('Link copied to clipboard!', 'success');
+                }).catch(() => {
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = fullUrl;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    showNotification('Link copied to clipboard!', 'success');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

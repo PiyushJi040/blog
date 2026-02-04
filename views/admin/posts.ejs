@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/styling/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    
+    <div class="admin-layout">
+        <!-- Admin Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <div class="admin-logo">
+                    <div class="logo">
+                        <span class="logo-text">JJ</span>
+                    </div>
+                    <span class="admin-title">Admin Panel</span>
+                </div>
+            </div>
+            
+            <nav class="admin-nav">
+                <ul class="admin-nav-list">
+                    <li class="admin-nav-item">
+                        <a href="/admin" class="admin-nav-link">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="/admin/posts" class="admin-nav-link active">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Posts</span>
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="/admin/posts/new" class="admin-nav-link">
+                            <i class="fas fa-plus"></i>
+                            <span>New Post</span>
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="/admin/comments" class="admin-nav-link">
+                            <i class="fas fa-comments"></i>
+                            <span>Comments</span>
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="/admin/users" class="admin-nav-link">
+                            <i class="fas fa-users"></i>
+                            <span>Users</span>
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="/admin/settings" class="admin-nav-link">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+                
+                <div class="admin-nav-footer">
+                    <a href="/" class="admin-nav-link">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Site</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+        
+        <!-- Admin Main Content -->
+        <main class="admin-main">
+            <div class="admin-header">
+                <div class="admin-header-content">
+                    <h1 class="admin-page-title">Manage Posts</h1>
+                    <p class="admin-page-subtitle">Create, edit, and manage all your blog posts</p>
+                </div>
+                <div class="admin-header-actions">
+                    <a href="/admin/posts/new" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        New Post
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Posts Table -->
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3 class="admin-card-title">
+                        <i class="fas fa-list"></i>
+                        All Posts (<%= posts.length %>)
+                    </h3>
+                    <div class="table-filters">
+                        <select class="filter-select" id="status-filter">
+                            <option value="">All Status</option>
+                            <option value="published">Published</option>
+                            <option value="draft">Draft</option>
+                        </select>
+                        <select class="filter-select" id="category-filter">
+                            <option value="">All Categories</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Lifestyle">Lifestyle</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Health">Health</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="admin-card-content">
+                    <% if (posts.length > 0) { %>
+                        <div class="posts-table-container">
+                            <table class="posts-table">
+                                <thead>
+                                    <tr>
+                                        <th>Post</th>
+                                        <th>Status</th>
+                                        <th>Category</th>
+                                        <th>Stats</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% posts.forEach(post => { %>
+                                        <tr class="post-row" data-status="<%= post.published ? 'published' : 'draft' %>" data-category="<%= post.category %>">
+                                            <td class="post-info">
+                                                <div class="post-thumbnail">
+                                                    <img src="<%= post.image %>" alt="<%= post.title %>">
+                                                    <% if (post.featured) { %>
+                                                        <span class="featured-indicator">
+                                                            <i class="fas fa-star"></i>
+                                                        </span>
+                                                    <% } %>
+                                                </div>
+                                                <div class="post-details">
+                                                    <h4 class="post-title">
+                                                        <a href="/post/<%= post.slug %>" target="_blank"><%= post.title %></a>
+                                                    </h4>
+                                                    <p class="post-excerpt"><%= post.excerpt %></p>
+                                                    <div class="post-tags">
+                                                        <% post.tags.slice(0, 3).forEach(tag => { %>
+                                                            <span class="tag">#<%= tag %></span>
+                                                        <% }); %>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="post-status">
+                                                <span class="status-badge <%= post.published ? 'published' : 'draft' %>">
+                                                    <i class="fas fa-<%= post.published ? 'check' : 'edit' %>"></i>
+                                                    <%= post.published ? 'Published' : 'Draft' %>
+                                                </span>
+                                            </td>
+                                            <td class="post-category">
+                                                <span class="category-badge"><%= post.category %></span>
+                                            </td>
+                                            <td class="post-stats">
+                                                <div class="stats-grid">
+                                                    <span class="stat">
+                                                        <i class="fas fa-eye"></i> <%= post.views %>
+                                                    </span>
+                                                    <span class="stat">
+                                                        <i class="fas fa-heart"></i> <%= post.likes %>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td class="post-date">
+                                                <div class="date-info">
+                                                    <span class="date-primary">
+                                                        <%= moment(post.createdAt).format('MMM DD, YYYY') %>
+                                                    </span>
+                                                    <span class="date-secondary">
+                                                        <%= moment(post.createdAt).format('h:mm A') %>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td class="post-actions">
+                                                <div class="action-buttons">
+                                                    <a href="/post/<%= post.slug %>" class="btn-icon" title="View Post" target="_blank">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="/admin/posts/edit/<%= post.id %>" class="btn-icon" title="Edit Post">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <button class="btn-icon delete-btn" data-post-id="<%= post.id %>" title="Delete Post">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } else { %>
+                        <div class="empty-state">
+                            <i class="fas fa-file-alt"></i>
+                            <h4>No posts yet</h4>
+                            <p>Create your first blog post to get started.</p>
+                            <a href="/admin/posts/new" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Create Post
+                            </a>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="/js/main.js"></script>
+    <script>
+        // Filter functionality
+        const statusFilter = document.getElementById('status-filter');
+        const categoryFilter = document.getElementById('category-filter');
+        const postRows = document.querySelectorAll('.post-row');
+        
+        function filterPosts() {
+            const statusValue = statusFilter.value;
+            const categoryValue = categoryFilter.value;
+            
+            postRows.forEach(row => {
+                const postStatus = row.dataset.status;
+                const postCategory = row.dataset.category;
+                
+                const statusMatch = !statusValue || postStatus === statusValue;
+                const categoryMatch = !categoryValue || postCategory === categoryValue;
+                
+                if (statusMatch && categoryMatch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        statusFilter.addEventListener('change', filterPosts);
+        categoryFilter.addEventListener('change', filterPosts);
+        
+        // Delete post functionality
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const postId = this.dataset.postId;
+                const postTitle = this.closest('.post-row').querySelector('.post-title a').textContent;
+                
+                if (confirm(`Are you sure you want to delete "${postTitle}"? This action cannot be undone.`)) {
+                    // In a real app, this would make an API call
+                    fetch(`/admin/posts/${postId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    }).then(response => {
+                        if (response.ok) {
+                            this.closest('.post-row').remove();
+                            showNotification('Post deleted successfully', 'success');
+                        } else {
+                            showNotification('Error deleting post', 'error');
+                        }
+                    }).catch(error => {
+                        console.error('Error:', error);
+                        showNotification('Error deleting post', 'error');
+                    });
+                }
+            });
+        });
+        
+        // Bulk actions (future enhancement)
+        function initBulkActions() {
+            const selectAllCheckbox = document.getElementById('select-all');
+            const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+            const bulkActions = document.querySelector('.bulk-actions');
+            
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', function() {
+                    rowCheckboxes.forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                    });
+                    toggleBulkActions();
+                });
+            }
+            
+            rowCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', toggleBulkActions);
+            });
+            
+            function toggleBulkActions() {
+                const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+                if (bulkActions) {
+                    bulkActions.style.display = checkedBoxes.length > 0 ? 'flex' : 'none';
+                }
+            }
+        }
+        
+        // Initialize bulk actions
+        initBulkActions();
+    </script>
+    
+    <style>
+        .table-filters {
+            display: flex;
+            gap: var(--space-3);
+        }
+        
+        .filter-select {
+            padding: var(--space-2) var(--space-3);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .posts-table-container {
+            overflow-x: auto;
+        }
+        
+        .posts-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: var(--font-size-sm);
+        }
+        
+        .posts-table th,
+        .posts-table td {
+            padding: var(--space-4);
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .posts-table th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .post-info {
+            display: flex;
+            gap: var(--space-4);
+            min-width: 300px;
+        }
+        
+        .post-thumbnail {
+            position: relative;
+            width: 80px;
+            height: 60px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .post-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .featured-indicator {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: var(--secondary-color);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+        
+        .post-details {
+            flex: 1;
+        }
+        
+        .post-title {
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            margin-bottom: var(--space-2);
+        }
+        
+        .post-title a {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        .post-title a:hover {
+            color: var(--primary-color);
+        }
+        
+        .post-excerpt {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--space-2);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .post-tags {
+            display: flex;
+            gap: var(--space-1);
+            flex-wrap: wrap;
+        }
+        
+        .post-tags .tag {
+            font-size: var(--font-size-xs);
+        }
+        
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-badge.published {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-color);
+        }
+        
+        .status-badge.draft {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--secondary-color);
+        }
+        
+        .stats-grid {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-1);
+        }
+        
+        .stats-grid .stat {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            font-size: var(--font-size-xs);
+            color: var(--text-light);
+        }
+        
+        .date-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .date-primary {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .date-secondary {
+            font-size: var(--font-size-xs);
+            color: var(--text-light);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: var(--space-2);
+        }
+        
+        .action-buttons .btn-icon {
+            width: 32px;
+            height: 32px;
+            font-size: var(--font-size-sm);
+        }
+        
+        @media (max-width: 768px) {
+            .posts-table {
+                font-size: var(--font-size-xs);
+            }
+            
+            .posts-table th,
+            .posts-table td {
+                padding: var(--space-2);
+            }
+            
+            .post-info {
+                min-width: 250px;
+            }
+            
+            .post-thumbnail {
+                width: 60px;
+                height: 45px;
+            }
+            
+            .table-filters {
+                flex-direction: column;
+            }
+        }
+    </style>
+</body>
+</html>

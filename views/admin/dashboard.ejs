@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/styling/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    
+    <div class="admin-layout">
+        <!-- Admin Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <div class="admin-logo">
+                    <div class="logo">
+                        <span class="logo-text">JJ</span>
+                    </div>
+                    <span class="admin-title">Admin Panel</span>
+                </div>
+            </div>
+            
+            <nav class="admin-nav">
+                <ul class="admin-nav-list">
+                    <li class="admin-nav-item">
+                        <a href="/admin" class="admin-nav-link active">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="/admin/posts" class="admin-nav-link">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Posts</span>
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="/admin/posts/new" class="admin-nav-link">
+                            <i class="fas fa-plus"></i>
+                            <span>New Post</span>
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="/admin/comments" class="admin-nav-link">
+                            <i class="fas fa-comments"></i>
+                            <span>Comments</span>
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="/admin/users" class="admin-nav-link">
+                            <i class="fas fa-users"></i>
+                            <span>Users</span>
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="/admin/settings" class="admin-nav-link">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+                
+                <div class="admin-nav-footer">
+                    <a href="/" class="admin-nav-link">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Site</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+        
+        <!-- Admin Main Content -->
+        <main class="admin-main">
+            <div class="admin-header">
+                <div class="admin-header-content">
+                    <h1 class="admin-page-title">Dashboard</h1>
+                    <p class="admin-page-subtitle">Welcome back, <%= user.username %>! Here's what's happening with your blog.</p>
+                </div>
+                <div class="admin-header-actions">
+                    <button class="btn btn-primary" onclick="window.location.href='/admin/posts/new'">
+                        <i class="fas fa-plus"></i>
+                        New Post
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number"><%= stats.totalPosts %></div>
+                        <div class="stat-label">Total Posts</div>
+                        <div class="stat-change">
+                            <span class="stat-change-value positive">
+                                <i class="fas fa-arrow-up"></i> +<%= stats.publishedPosts %>
+                            </span>
+                            <span class="stat-change-label">Published</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number"><%= stats.totalViews.toLocaleString() %></div>
+                        <div class="stat-label">Total Views</div>
+                        <div class="stat-change">
+                            <span class="stat-change-value positive">
+                                <i class="fas fa-arrow-up"></i> +12%
+                            </span>
+                            <span class="stat-change-label">This month</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number"><%= stats.totalUsers %></div>
+                        <div class="stat-label">Total Users</div>
+                        <div class="stat-change">
+                            <span class="stat-change-value positive">
+                                <i class="fas fa-arrow-up"></i> +3
+                            </span>
+                            <span class="stat-change-label">New this week</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number"><%= stats.totalComments %></div>
+                        <div class="stat-label">Total Comments</div>
+                        <div class="stat-change">
+                            <span class="stat-change-value neutral">
+                                <i class="fas fa-minus"></i> 0
+                            </span>
+                            <span class="stat-change-label">No change</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity -->
+            <div class="admin-content-grid">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">
+                            <i class="fas fa-clock"></i>
+                            Recent Posts
+                        </h3>
+                        <a href="/admin/posts" class="admin-card-action">
+                            View All <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="admin-card-content">
+                        <% if (recentPosts.length > 0) { %>
+                            <div class="recent-posts-list">
+                                <% recentPosts.forEach(post => { %>
+                                    <div class="recent-post-item">
+                                        <div class="recent-post-image">
+                                            <img src="<%= post.image %>" alt="<%= post.title %>">
+                                        </div>
+                                        <div class="recent-post-content">
+                                            <h4 class="recent-post-title">
+                                                <a href="/post/<%= post.slug %>"><%= post.title %></a>
+                                            </h4>
+                                            <div class="recent-post-meta">
+                                                <span class="recent-post-status <%= post.published ? 'published' : 'draft' %>">
+                                                    <i class="fas fa-<%= post.published ? 'check' : 'edit' %>"></i>
+                                                    <%= post.published ? 'Published' : 'Draft' %>
+                                                </span>
+                                                <span class="recent-post-date">
+                                                    <%= moment(post.createdAt).format('MMM DD, YYYY') %>
+                                                </span>
+                                            </div>
+                                            <div class="recent-post-stats">
+                                                <span class="stat">
+                                                    <i class="fas fa-eye"></i> <%= post.views %>
+                                                </span>
+                                                <span class="stat">
+                                                    <i class="fas fa-heart"></i> <%= post.likes %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="recent-post-actions">
+                                            <a href="/admin/posts/edit/<%= post.id %>" class="btn-icon" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button class="btn-icon delete-btn" data-post-id="<%= post.id %>" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } else { %>
+                            <div class="empty-state">
+                                <i class="fas fa-file-alt"></i>
+                                <h4>No posts yet</h4>
+                                <p>Create your first blog post to get started.</p>
+                                <a href="/admin/posts/new" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Create Post
+                                </a>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+                
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3 class="admin-card-title">
+                            <i class="fas fa-chart-line"></i>
+                            Quick Stats
+                        </h3>
+                    </div>
+                    <div class="admin-card-content">
+                        <div class="quick-stats">
+                            <div class="quick-stat-item">
+                                <div class="quick-stat-label">Posts This Month</div>
+                                <div class="quick-stat-value">
+                                    <%= recentPosts.filter(p => moment(p.createdAt).isAfter(moment().subtract(30, 'days'))).length %>
+                                </div>
+                            </div>
+                            <div class="quick-stat-item">
+                                <div class="quick-stat-label">Average Views per Post</div>
+                                <div class="quick-stat-value">
+                                    <%= stats.totalPosts > 0 ? Math.round(stats.totalViews / stats.totalPosts) : 0 %>
+                                </div>
+                            </div>
+                            <div class="quick-stat-item">
+                                <div class="quick-stat-label">Most Popular Category</div>
+                                <div class="quick-stat-value">Technology</div>
+                            </div>
+                            <div class="quick-stat-item">
+                                <div class="quick-stat-label">Engagement Rate</div>
+                                <div class="quick-stat-value">8.5%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="admin-actions">
+                            <h4>Quick Actions</h4>
+                            <div class="action-buttons">
+                                <a href="/admin/posts/new" class="action-btn">
+                                    <i class="fas fa-plus"></i>
+                                    <span>New Post</span>
+                                </a>
+                                <a href="/admin/comments" class="action-btn">
+                                    <i class="fas fa-comments"></i>
+                                    <span>Moderate Comments</span>
+                                </a>
+                                <a href="/admin/settings" class="action-btn">
+                                    <i class="fas fa-cog"></i>
+                                    <span>Settings</span>
+                                </a>
+                                <a href="/" class="action-btn">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    <span>View Site</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="/js/main.js"></script>
+    <script>
+        // Delete post functionality
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const postId = this.dataset.postId;
+                if (confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+                    // In a real app, this would make an API call
+                    fetch(`/admin/posts/${postId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    }).then(response => {
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            alert('Error deleting post');
+                        }
+                    }).catch(error => {
+                        console.error('Error:', error);
+                        alert('Error deleting post');
+                    });
+                }
+            });
+        });
+        
+        // Auto-refresh stats every 30 seconds
+        setInterval(() => {
+            // In a real app, this would fetch updated stats
+            console.log('Refreshing stats...');
+        }, 30000);
+    </script>
+</body>
+</html>

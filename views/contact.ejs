@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <%- include('partials/header') %>
+    
+    <!-- Hero Section -->
+    <section class="page-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Get in <span class="highlight">Touch</span></h1>
+                <p class="hero-subtitle">We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Content -->
+    <section class="contact-content">
+        <div class="container">
+            <div class="contact-grid">
+                <!-- Contact Form -->
+                <div class="contact-form-section">
+                    <div class="section-header">
+                        <h2>Send us a Message</h2>
+                        <p>Fill out the form below and we'll get back to you within 24 hours.</p>
+                    </div>
+                    
+                    <form class="contact-form" id="contact-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName" class="form-label">
+                                    <i class="fas fa-user"></i>
+                                    First Name
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="firstName" 
+                                    name="firstName" 
+                                    class="form-input" 
+                                    placeholder="Your first name"
+                                    required
+                                >
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="lastName" class="form-label">
+                                    <i class="fas fa-user"></i>
+                                    Last Name
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="lastName" 
+                                    name="lastName" 
+                                    class="form-input" 
+                                    placeholder="Your last name"
+                                    required
+                                >
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="form-label">
+                                <i class="fas fa-envelope"></i>
+                                Email Address
+                            </label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                class="form-input" 
+                                placeholder="your.email@example.com"
+                                required
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject" class="form-label">
+                                <i class="fas fa-tag"></i>
+                                Subject
+                            </label>
+                            <select id="subject" name="subject" class="form-input" required>
+                                <option value="">Select a subject</option>
+                                <option value="general">General Inquiry</option>
+                                <option value="support">Technical Support</option>
+                                <option value="partnership">Partnership</option>
+                                <option value="feedback">Feedback</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message" class="form-label">
+                                <i class="fas fa-comment"></i>
+                                Message
+                            </label>
+                            <textarea 
+                                id="message" 
+                                name="message" 
+                                class="form-textarea" 
+                                placeholder="Tell us how we can help you..."
+                                rows="6"
+                                required
+                            ></textarea>
+                            <div class="form-hint">Minimum 10 characters</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="checkbox-container">
+                                <input type="checkbox" name="newsletter" id="newsletter">
+                                <span class="checkmark"></span>
+                                Subscribe to our newsletter for updates and new posts
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-lg btn-full">
+                            <i class="fas fa-paper-plane"></i>
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="contact-info-section">
+                    <div class="contact-card">
+                        <h3>Contact Information</h3>
+                        <p>Get in touch with us through any of these channels. We're here to help!</p>
+                        
+                        <div class="contact-methods">
+                            <div class="contact-method">
+                                <div class="method-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="method-content">
+                                    <h4>Email</h4>
+                                    <p>jaiswalpiyush040@gmail.com</p>
+                                    <span class="method-note">We'll respond within 24 hours</span>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-method">
+                                <div class="method-icon">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div class="method-content">
+                                    <h4>Phone</h4>
+                                    <p>+91 9142143711</p>
+                                    <span class="method-note">Mon-Fri, 9AM-6PM IST</span>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-method">
+                                <div class="method-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="method-content">
+                                    <h4>Address</h4>
+                                    <p>827013, Bokaro<br>Jharkhand, India</p>
+                                    <span class="method-note">Visit us by appointment</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="social-section">
+                            <h4>Follow Us</h4>
+                            <div class="social-links">
+                                <a href="#" class="social-link" title="Facebook">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="social-link" title="Twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="social-link" title="Instagram">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-link" title="LinkedIn">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="social-link" title="GitHub">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-section">
+                        <h3>Frequently Asked Questions</h3>
+                        <div class="faq-list">
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <i class="fas fa-question-circle"></i>
+                                    How can I contribute to the blog?
+                                </div>
+                                <div class="faq-answer">
+                                    Simply create an account and start writing! All registered users can publish posts after review.
+                                </div>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <i class="fas fa-question-circle"></i>
+                                    Is there a content review process?
+                                </div>
+                                <div class="faq-answer">
+                                    Yes, all posts go through a quality review to ensure they meet our community standards.
+                                </div>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <i class="fas fa-question-circle"></i>
+                                    Can I edit my posts after publishing?
+                                </div>
+                                <div class="faq-answer">
+                                    Absolutely! You can edit your posts anytime from your dashboard.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <%- include('partials/footer') %>
+    
+    <script src="/js/main.js"></script>
+    <script>
+        // Contact form handling
+        document.getElementById('contact-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const submitBtn = this.querySelector('button[type=\"submit\"]');
+            const originalText = submitBtn.innerHTML;
+            
+            // Show loading state
+            submitBtn.innerHTML = '<i class=\"fas fa-spinner fa-spin\"></i> Sending...';
+            submitBtn.disabled = true;
+            
+            try {\n                const response = await fetch('/contact', {\n                    method: 'POST',\n                    body: formData\n                });\n                \n                const result = await response.json();\n                \n                if (result.success) {\n                    showNotification('Message sent successfully! We\\'ll get back to you soon.', 'success');\n                    this.reset();\n                } else {\n                    showNotification('Failed to send message. Please try again.', 'error');\n                }\n            } catch (error) {\n                console.error('Contact form error:', error);\n                showNotification('An error occurred. Please try again later.', 'error');\n            } finally {\n                submitBtn.innerHTML = originalText;\n                submitBtn.disabled = false;\n            }\n        });\n        \n        // Form validation\n        const messageTextarea = document.getElementById('message');\n        messageTextarea.addEventListener('input', function() {\n            const minLength = 10;\n            const currentLength = this.value.length;\n            \n            if (currentLength < minLength && currentLength > 0) {\n                this.setCustomValidity(`Message must be at least ${minLength} characters long`);\n            } else {\n                this.setCustomValidity('');\n            }\n        });\n        \n        // FAQ toggle functionality\n        document.querySelectorAll('.faq-question').forEach(question => {\n            question.addEventListener('click', function() {\n                const faqItem = this.parentElement;\n                const answer = faqItem.querySelector('.faq-answer');\n                \n                faqItem.classList.toggle('active');\n                \n                if (faqItem.classList.contains('active')) {\n                    answer.style.maxHeight = answer.scrollHeight + 'px';\n                } else {\n                    answer.style.maxHeight = '0';\n                }\n            });\n        });\n    </script>\n</body>\n</html>

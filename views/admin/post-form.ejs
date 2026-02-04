@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/styling/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    
+    <div class="admin-layout">
+        <%- include('../partials/admin-sidebar') %>
+        
+        <main class="admin-main">
+            <div class="admin-header">
+                <div class="admin-header-content">
+                    <h1 class="admin-page-title">
+                        <%= post ? 'Edit Post' : 'Create New Post' %>
+                    </h1>
+                    <p class="admin-page-subtitle">
+                        <%= post ? 'Update your existing post' : 'Share your thoughts with the world' %>
+                    </p>
+                </div>
+                <div class="admin-header-actions">
+                    <a href="/admin/posts" class="btn btn-outline">
+                        <i class="fas fa-arrow-left"></i> Back to Posts
+                    </a>
+                </div>
+            </div>
+            
+            <form class="post-form" method="POST" action="<%= post ? `/admin/posts/${post.id}` : '/admin/posts' %>" enctype="multipart/form-data">
+                <div class="form-grid">
+                    <div class="form-main">
+                        <div class="form-card">
+                            <div class="form-card-header">
+                                <h3>Post Content</h3>
+                            </div>
+                            <div class="form-card-content">
+                                <div class="form-group">
+                                    <label for="title" class="form-label">
+                                        <i class="fas fa-heading"></i>
+                                        Post Title
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        id="title" 
+                                        name="title" 
+                                        class="form-input" 
+                                        placeholder="Enter an engaging title..."
+                                        value="<%= post ? post.title : '' %>"
+                                        required
+                                        maxlength="100"
+                                    >
+                                    <div class="form-hint">
+                                        <span id="title-count">0</span>/100 characters
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="content" class="form-label">
+                                        <i class="fas fa-edit"></i>
+                                        Content
+                                    </label>
+                                    <div class="editor-toolbar">
+                                        <button type="button" class="editor-btn" data-command="bold" title="Bold">
+                                            <i class="fas fa-bold"></i>
+                                        </button>
+                                        <button type="button" class="editor-btn" data-command="italic" title="Italic">
+                                            <i class="fas fa-italic"></i>
+                                        </button>
+                                        <button type="button" class="editor-btn" data-command="underline" title="Underline">
+                                            <i class="fas fa-underline"></i>
+                                        </button>
+                                        <div class="editor-divider"></div>
+                                        <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                            <i class="fas fa-list-ul"></i>
+                                        </button>
+                                        <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                            <i class="fas fa-list-ol"></i>
+                                        </button>
+                                        <div class="editor-divider"></div>
+                                        <button type="button" class="editor-btn" data-command="createLink" title="Insert Link">
+                                            <i class="fas fa-link"></i>
+                                        </button>
+                                        <button type="button" class="editor-btn" data-command="insertImage" title="Insert Image">
+                                            <i class="fas fa-image"></i>
+                                        </button>
+                                    </div>
+                                    <div 
+                                        id="content-editor" 
+                                        class="content-editor" 
+                                        contenteditable="true"
+                                        data-placeholder="Start writing your post content here..."
+                                    ><%= post ? post.content : '' %></div>
+                                    <textarea 
+                                        id="content" 
+                                        name="content" 
+                                        style="display: none;"
+                                        required
+                                    ><%= post ? post.content : '' %></textarea>
+                                    <div class="form-hint">
+                                        Use the toolbar above to format your content. Supports Markdown syntax.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-sidebar">
+                        <div class="form-card">
+                            <div class="form-card-header">
+                                <h3>Publish Settings</h3>
+                            </div>
+                            <div class="form-card-content">
+                                <div class="form-group">
+                                    <label class="checkbox-container">
+                                        <input 
+                                            type="checkbox" 
+                                            name="published" 
+                                            <%= post && post.published ? 'checked' : '' %>
+                                        >
+                                        <span class="checkmark"></span>
+                                        Publish immediately
+                                    </label>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="checkbox-container">
+                                        <input 
+                                            type="checkbox" 
+                                            name="featured" 
+                                            <%= post && post.featured ? 'checked' : '' %>
+                                        >
+                                        <span class="checkmark"></span>
+                                        Feature this post
+                                    </label>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary btn-full">
+                                        <i class="fas fa-<%= post ? 'save' : 'plus' %>"></i>
+                                        <%= post ? 'Update Post' : 'Create Post' %>
+                                    </button>
+                                    <button type="button" class="btn btn-outline btn-full" onclick="saveDraft()">
+                                        <i class="fas fa-file-alt"></i>
+                                        Save as Draft
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-card">
+                            <div class="form-card-header">
+                                <h3>Post Details</h3>
+                            </div>
+                            <div class="form-card-content">
+                                <div class="form-group">
+                                    <label for="category" class="form-label">
+                                        <i class="fas fa-folder"></i>
+                                        Category
+                                    </label>
+                                    <select id="category" name="category" class="form-input" required>
+                                        <option value="">Select a category</option>
+                                        <% categories.forEach(cat => { %>
+                                            <option 
+                                                value="<%= cat %>" 
+                                                <%= post && post.category === cat ? 'selected' : '' %>
+                                            >
+                                                <%= cat %>
+                                            </option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="tags" class="form-label">
+                                        <i class="fas fa-tags"></i>
+                                        Tags
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        id="tags" 
+                                        name="tags" 
+                                        class="form-input" 
+                                        placeholder="technology, web, tutorial"
+                                        value="<%= post ? post.tags.join(', ') : '' %>"
+                                    >
+                                    <div class="form-hint">
+                                        Separate tags with commas
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="image" class="form-label">
+                                        <i class="fas fa-image"></i>
+                                        Featured Image
+                                    </label>
+                                    <div class="file-upload-area" id="file-upload-area">
+                                        <input 
+                                            type="file" 
+                                            id="image" 
+                                            name="image" 
+                                            accept="image/*"
+                                            class="file-input"
+                                        >
+                                        <div class="file-upload-content">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <p>Click to upload or drag and drop</p>
+                                            <span>PNG, JPG, GIF up to 5MB</span>
+                                        </div>
+                                        <% if (post && post.image) { %>
+                                            <div class="current-image">
+                                                <img src="<%= post.image %>" alt="Current featured image">
+                                                <span>Current image</span>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-card">
+                            <div class="form-card-header">
+                                <h3>SEO & Social</h3>
+                            </div>
+                            <div class="form-card-content">
+                                <div class="form-group">
+                                    <label for="excerpt" class="form-label">
+                                        <i class="fas fa-align-left"></i>
+                                        Excerpt
+                                    </label>
+                                    <textarea 
+                                        id="excerpt" 
+                                        name="excerpt" 
+                                        class="form-textarea" 
+                                        placeholder="Brief description for social media and search engines..."
+                                        rows="3"
+                                        maxlength="160"
+                                    ><%= post ? post.excerpt : '' %></textarea>
+                                    <div class="form-hint">
+                                        <span id="excerpt-count">0</span>/160 characters
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </main>
+    </div>
+    
+    <script src="/js/main.js"></script>
+    <script>
+        // Character counters
+        const titleInput = document.getElementById('title');
+        const titleCount = document.getElementById('title-count');
+        const excerptInput = document.getElementById('excerpt');
+        const excerptCount = document.getElementById('excerpt-count');
+        
+        titleInput.addEventListener('input', () => {
+            titleCount.textContent = titleInput.value.length;
+        });
+        
+        excerptInput.addEventListener('input', () => {
+            excerptCount.textContent = excerptInput.value.length;
+        });
+        
+        // Initialize counters
+        titleCount.textContent = titleInput.value.length;
+        excerptCount.textContent = excerptInput.value.length;
+        
+        // Rich text editor
+        const editor = document.getElementById('content-editor');
+        const contentTextarea = document.getElementById('content');
+        const editorButtons = document.querySelectorAll('.editor-btn');
+        
+        // Editor commands
+        editorButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const command = btn.dataset.command;
+                
+                if (command === 'createLink') {
+                    const url = prompt('Enter URL:');
+                    if (url) {
+                        document.execCommand(command, false, url);
+                    }
+                } else if (command === 'insertImage') {
+                    const url = prompt('Enter image URL:');
+                    if (url) {
+                        document.execCommand(command, false, url);
+                    }
+                } else {
+                    document.execCommand(command, false, null);
+                }
+                
+                editor.focus();
+                updateContent();
+            });
+        });
+        
+        // Update hidden textarea
+        function updateContent() {
+            contentTextarea.value = editor.innerHTML;
+        }
+        
+        editor.addEventListener('input', updateContent);
+        editor.addEventListener('paste', () => {
+            setTimeout(updateContent, 10);
+        });
+        
+        // File upload
+        const fileUploadArea = document.getElementById('file-upload-area');
+        const fileInput = document.getElementById('image');
+        
+        fileUploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        fileUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUploadArea.classList.add('dragover');
+        });
+        
+        fileUploadArea.addEventListener('dragleave', () => {
+            fileUploadArea.classList.remove('dragover');
+        });
+        
+        fileUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUploadArea.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                handleFileSelect(files[0]);
+            }
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+        
+        function handleFileSelect(file) {
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = document.createElement('div');
+                    preview.className = 'image-preview';
+                    preview.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview">
+                        <span>Selected: ${file.name}</span>
+                    `;
+                    
+                    const existingPreview = fileUploadArea.querySelector('.image-preview');
+                    if (existingPreview) {
+                        existingPreview.remove();
+                    }
+                    
+                    fileUploadArea.appendChild(preview);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // Save draft function
+        function saveDraft() {
+            const form = document.querySelector('.post-form');
+            const publishedCheckbox = form.querySelector('input[name="published"]');
+            const originalChecked = publishedCheckbox.checked;
+            
+            publishedCheckbox.checked = false;
+            form.submit();
+        }
+        
+        // Form validation
+        document.querySelector('.post-form').addEventListener('submit', (e) => {
+            const title = titleInput.value.trim();
+            const content = editor.textContent.trim();
+            const category = document.getElementById('category').value;
+            
+            if (!title) {
+                e.preventDefault();
+                alert('Please enter a title');
+                titleInput.focus();
+                return;
+            }
+            
+            if (!content) {
+                e.preventDefault();
+                alert('Please enter some content');
+                editor.focus();
+                return;
+            }
+            
+            if (!category) {
+                e.preventDefault();
+                alert('Please select a category');
+                document.getElementById('category').focus();
+                return;
+            }
+            
+            updateContent();
+        });
+        
+        // Auto-save draft every 30 seconds
+        setInterval(() => {
+            if (titleInput.value.trim() || editor.textContent.trim()) {
+                // In a real app, this would save to localStorage or make an API call
+                console.log('Auto-saving draft...');
+            }
+        }, 30000);
+    </script>
+    
+    <style>
+        .form-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--space-8);
+        }
+        
+        .form-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--space-6);
+        }
+        
+        .form-card-header {
+            padding: var(--space-6);
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+        }
+        
+        .form-card-header h3 {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .form-card-content {
+            padding: var(--space-6);
+        }
+        
+        .editor-toolbar {
+            display: flex;
+            gap: var(--space-1);
+            padding: var(--space-3);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            flex-wrap: wrap;
+        }
+        
+        .editor-btn {
+            width: 32px;
+            height: 32px;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+        }
+        
+        .editor-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .editor-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .editor-divider {
+            width: 1px;
+            height: 24px;
+            background: var(--border-color);
+            margin: 4px var(--space-2);
+        }
+        
+        .content-editor {
+            min-height: 400px;
+            padding: var(--space-4);
+            border: 1px solid var(--border-color);
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-primary);
+            font-size: var(--font-size-base);
+            line-height: 1.6;
+            outline: none;
+            overflow-y: auto;
+        }
+        
+        .content-editor:empty::before {
+            content: attr(data-placeholder);
+            color: var(--text-light);
+            pointer-events: none;
+        }
+        
+        .content-editor:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .file-upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-8);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+        
+        .file-upload-area:hover,
+        .file-upload-area.dragover {
+            border-color: var(--primary-color);
+            background: rgba(99, 102, 241, 0.05);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-upload-content i {
+            font-size: var(--font-size-3xl);
+            color: var(--text-light);
+            margin-bottom: var(--space-3);
+        }
+        
+        .file-upload-content p {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .file-upload-content span {
+            font-size: var(--font-size-sm);
+            color: var(--text-light);
+        }
+        
+        .current-image,
+        .image-preview {
+            margin-top: var(--space-4);
+            padding: var(--space-4);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+        }
+        
+        .current-image img,
+        .image-preview img {
+            max-width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-2);
+        }
+        
+        .current-image span,
+        .image-preview span {
+            display: block;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            text-align: center;
+        }
+        
+        @media (max-width: 1024px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .editor-toolbar {
+                gap: var(--space-1);
+            }
+            
+            .editor-btn {
+                width: 28px;
+                height: 28px;
+                font-size: var(--font-size-sm);
+            }
+            
+            .content-editor {
+                min-height: 300px;
+            }
+        }
+    </style>
+</body>
+</html>

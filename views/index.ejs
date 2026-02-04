@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <%- include('partials/header') %>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Welcome to <span class="highlight">JJ Blog</span></h1>
+                <p class="hero-subtitle">Discover amazing stories, insights, and ideas from our community of writers</p>
+                <div class="hero-actions">
+                    <a href="/blog" class="btn btn-primary btn-lg">
+                        <i class="fas fa-book-open"></i> Explore Posts
+                    </a>
+                    <% if (!user) { %>
+                        <a href="/register" class="btn btn-outline btn-lg">
+                            <i class="fas fa-user-plus"></i> Join Community
+                        </a>
+                    <% } %>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="floating-cards">
+                    <div class="floating-card card-1">
+                        <i class="fas fa-pen-fancy"></i>
+                        <span>Write</span>
+                    </div>
+                    <div class="floating-card card-2">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </div>
+                    <div class="floating-card card-3">
+                        <i class="fas fa-heart"></i>
+                        <span>Connect</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Featured Posts -->
+    <% if (featuredPosts.length > 0) { %>
+    <section class="featured-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Featured Posts</h2>
+                <p class="section-subtitle">Hand-picked stories worth reading</p>
+            </div>
+            <div class="featured-grid">
+                <% featuredPosts.forEach((post, index) => { %>
+                    <article class="featured-card <%= index === 0 ? 'featured-main' : '' %>">
+                        <div class="card-image">
+                            <img src="<%= post.image %>" alt="<%= post.title %>">
+                            <div class="card-overlay">
+                                <span class="category-badge"><%= post.category %></span>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-meta">
+                                <span class="author">
+                                    <i class="fas fa-user"></i> <%= post.author %>
+                                </span>
+                                <span class="date">
+                                    <i class="fas fa-calendar"></i> <%= moment(post.createdAt).format('MMM DD, YYYY') %>
+                                </span>
+                            </div>
+                            <h3 class="card-title">
+                                <a href="/post/<%= post.slug %>"><%= post.title %></a>
+                            </h3>
+                            <p class="card-excerpt"><%= post.excerpt %></p>
+                            <div class="card-stats">
+                                <span class="stat">
+                                    <i class="fas fa-eye"></i> <%= post.views %>
+                                </span>
+                                <span class="stat">
+                                    <i class="fas fa-heart"></i> <%= post.likes %>
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                <% }); %>
+            </div>
+        </div>
+    </section>
+    <% } %>
+    
+    <!-- Recent Posts & Sidebar -->
+    <section class="content-section">
+        <div class="container">
+            <div class="content-grid">
+                <div class="main-content">
+                    <div class="section-header">
+                        <h2 class="section-title">Recent Posts</h2>
+                        <a href="/blog" class="view-all-link">
+                            View All <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="posts-grid">
+                        <% recentPosts.forEach(post => { %>
+                            <article class="post-card">
+                                <div class="card-image">
+                                    <img src="<%= post.image %>" alt="<%= post.title %>">
+                                    <div class="card-overlay">
+                                        <span class="category-badge"><%= post.category %></span>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <div class="card-meta">
+                                        <span class="author">
+                                            <i class="fas fa-user"></i> <%= post.author %>
+                                        </span>
+                                        <span class="date">
+                                            <i class="fas fa-calendar"></i> <%= moment(post.createdAt).format('MMM DD') %>
+                                        </span>
+                                    </div>
+                                    <h3 class="card-title">
+                                        <a href="/post/<%= post.slug %>"><%= post.title %></a>
+                                    </h3>
+                                    <p class="card-excerpt"><%= post.excerpt %></p>
+                                    <div class="card-footer">
+                                        <div class="card-tags">
+                                            <% post.tags.slice(0, 2).forEach(tag => { %>
+                                                <span class="tag">#<%= tag %></span>
+                                            <% }); %>
+                                        </div>
+                                        <div class="card-stats">
+                                            <span class="stat">
+                                                <i class="fas fa-eye"></i> <%= post.views %>
+                                            </span>
+                                            <span class="stat">
+                                                <i class="fas fa-heart"></i> <%= post.likes %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        <% }); %>
+                    </div>
+                </div>
+                
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <!-- Popular Posts -->
+                    <div class="sidebar-widget">
+                        <h3 class="widget-title">
+                            <i class="fas fa-fire"></i> Popular Posts
+                        </h3>
+                        <div class="popular-posts">
+                            <% popularPosts.forEach((post, index) => { %>
+                                <article class="popular-post">
+                                    <div class="post-rank"><%= index + 1 %></div>
+                                    <div class="post-content">
+                                        <h4 class="post-title">
+                                            <a href="/post/<%= post.slug %>"><%= post.title %></a>
+                                        </h4>
+                                        <div class="post-meta">
+                                            <span class="views">
+                                                <i class="fas fa-eye"></i> <%= post.views %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </article>
+                            <% }); %>
+                        </div>
+                    </div>
+                    
+                    <!-- Categories -->
+                    <div class="sidebar-widget">
+                        <h3 class="widget-title">
+                            <i class="fas fa-folder"></i> Categories
+                        </h3>
+                        <div class="categories-list">
+                            <% categories.forEach(category => { %>
+                                <a href="/blog?category=<%= category %>" class="category-item">
+                                    <span class="category-name"><%= category %></span>
+                                    <span class="category-count">
+                                        <%= recentPosts.filter(p => p.category === category).length %>
+                                    </span>
+                                </a>
+                            <% }); %>
+                        </div>
+                    </div>
+                    
+                    <!-- Newsletter -->
+                    <div class="sidebar-widget newsletter-widget">
+                        <h3 class="widget-title">
+                            <i class="fas fa-envelope"></i> Stay Updated
+                        </h3>
+                        <p>Get the latest posts delivered right to your inbox.</p>
+                        <form class="newsletter-form" id="sidebar-newsletter">
+                            <input type="email" placeholder="Your email address" required>
+                            <button type="submit" class="btn btn-primary">
+                                Subscribe
+                            </button>
+                        </form>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+    
+    <%- include('partials/footer') %>
+    
+    <script src="/js/main.js"></script>
+</body>
+</html>
