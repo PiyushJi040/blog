@@ -90,6 +90,25 @@ This project follows a modular MVC (Model-View-Controller) architecture:
 - **Configuration**: App settings and environment config (`config/`)
 - **Utilities**: Helper functions and shared code (`utils/`)
 
+## 🚀 Deployment
+
+### Deploy to Render (Recommended)
+1. Push code to GitHub
+2. Connect your GitHub repo at [render.com](https://render.com)
+3. Render will auto-detect `render.yaml` and deploy
+
+### Deploy to Vercel
+```bash
+npm i -g vercel
+vercel
+```
+
+### Deploy to Heroku
+```bash
+heroku create your-app-name
+git push heroku main
+```
+
 ## 📄 License
 
 ISC License
