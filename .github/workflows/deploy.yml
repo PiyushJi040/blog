@@ -1,14 +1,16 @@
-name: Deploy to Render
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     
     steps:
     - uses: actions/checkout@v3
@@ -21,5 +23,21 @@ jobs:
     - name: Install dependencies
       run: npm ci
       
-    - name: Run tests (if any)
-      run: npm test --if-present
+    - name: Build static site
+      run: |
+        mkdir -p dist
+        cp -r public/* dist/
+        cp -r views dist/
+        cp package.json dist/
+        
+    - name: Setup Pages
+      uses: actions/configure-pages@v3
+      
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: './dist'
+        
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v2
