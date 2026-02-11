@@ -26,9 +26,15 @@ jobs:
     - name: Build static site
       run: |
         mkdir -p dist
-        cp -r public/* dist/
-        cp -r views dist/
-        cp package.json dist/
+        cp -r public dist/ || true
+        cp -r views dist/ || true
+        cp -r src dist/ || true
+        cp -r config dist/ || true
+        cp -r routes dist/ || true
+        cp -r models dist/ || true
+        cp -r middleware dist/ || true
+        cp -r utils dist/ || true
+        cp package*.json dist/
         
     - name: Setup Pages
       uses: actions/configure-pages@v4
