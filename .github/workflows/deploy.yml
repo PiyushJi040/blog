@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy to Render
 
 on:
   push:
@@ -7,46 +7,12 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
     
     steps:
     - uses: actions/checkout@v4
     
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Build static site
+    - name: Deploy to Render
+      env:
+        RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
       run: |
-        mkdir -p dist
-        cp -r public dist/ || true
-        cp -r views dist/ || true
-        cp -r src dist/ || true
-        cp -r config dist/ || true
-        cp -r routes dist/ || true
-        cp -r models dist/ || true
-        cp -r middleware dist/ || true
-        cp -r utils dist/ || true
-        cp package*.json dist/
-        
-    - name: Setup Pages
-      uses: actions/configure-pages@v4
-      
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: './dist'
-        
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
+        curl -X POST "https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_DEPLOY_HOOK_KEY }}"
